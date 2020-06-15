@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>tigs test</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.3/vue.min.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header id="header">
+        <h1>TIGS test</h1>
+        <nav id="nav"></nav>
+    </header>
+
+    <!-- Main -->
+    
+        <div class="container">
+
+            <header class="major">
+
+            </header>
+
+
+
+            <audio id="audioplayer" controls>
+                <!-- Remove the "Controls" Attribute if you don't want the visual controls -->
+            </audio>
+
+
+
+
+            <script>
+                var lastSong = null;
+                var selection = null;
+                var playlist = ["sounds-tones/0.wav",
+                    "sounds-tones/1.wav",
+                    "sounds-tones/2.wav",
+                    "sounds-tones/3.wav",
+                    "sounds-tones/4.wav"
+                ]; // List of Songs
+
+
+                var player = document.getElementById("audioplayer"); // Get Audio Element
+                player.autoplay = true;
+                player.addEventListener("ended", selectRandom); // Run function when song ends
+
+                function selectRandom() {
+                    while (selection == lastSong) { // Repeat until different song is selected
+                        selection = Math.floor(Math.random() * playlist.length);
+                    }
+                    lastSong = selection; // Remember last song
+                    player.src = playlist[selection]; // Tell HTML the location of the new Song
+
+                }
+
+                selectRandom(); // Select initial song
+                player.play(); // Start Song
+
+            </script>
+
+
+
+
+
+            /* second */
+
+            <script>
+                var app = new Vue({
+                    el: '#container',
+                    data: {
+                        int: null,
+                        currentId: 0,
+                        crossTime: 1000,
+                        audios: [
+                            new Audio("sounds/1.mp3"),
+                            new Audio("sounds/2.mp3"),
+                            new Audio("sounds/3.mp3"),
+                        ]
+                    },
+                    mounted() {
+                        for (item of this.audios) {
+                            item.volume = 0
+                            item.loop = true
+                        }
+                        this.audios[this.currentId].volume = 1
+                        this.audios[this.currentId].play()
+                    },
+                    methods: {
+                        playNext() {
+                            var self = this
+
+                            if (self.int) {
+                                window.clearInterval(self.int)
+                            }
+
+                            var preId
+                            if (self.currentId < self.audios.length - 1) {
+                                self.currentId++
+                                    preId = self.currentId - 1
+                            } else {
+                                self.currentId = 0
+                                preId = self.audios.length - 1
+                            }
+
+                            self.audios[self.currentId].currentTime = 0
+
+                            self.int = setInterval(function() {
+                                self.audios[self.currentId].play()
+                                if (self.audios[preId].volume > 0) {
+                                    self.audios[preId].volume -= .01
+                                    self.audios[self.currentId].volume += .01
+                                } else {
+                                    self.audios[preId].pause()
+                                    window.clearInterval(self.int)
+                                    self.int = null
+                                }
+                            }, self.crossTime / 100)
+                        }
+                    }
+                })
+
+            </script>
+
+            <div id="container">
+                <button @click="playNext">play next</button>
+            </div>
+        </div>
+</body>
+
+</html>
