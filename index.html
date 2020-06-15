@@ -34,7 +34,6 @@
 
 
 
-
             <script>
                 var lastSong = null;
                 var selection = null;
@@ -63,74 +62,7 @@
                 player.play(); // Start Song
 
             </script>
-
-
-
-
-
-            /* second */
-
-            <script>
-                var app = new Vue({
-                    el: '#container',
-                    data: {
-                        int: null,
-                        currentId: 0,
-                        crossTime: 1000,
-                        audios: [
-                            new Audio("audio/TIGS_05.wav"),
-                            new Audio("audio/TIGS_06.wav"),
-                            new Audio("audio/TIGS_07.wav"),
-                            new Audio("audio/TIGS_08.wav")
-                        ]
-                    },
-                    mounted() {
-                        for (item of this.audios) {
-                            item.volume = 0
-                            item.loop = true
-                        }
-                        this.audios[this.currentId].volume = 1
-                        this.audios[this.currentId].play()
-                    },
-                    methods: {
-                        playNext() {
-                            var self = this
-
-                            if (self.int) {
-                                window.clearInterval(self.int)
-                            }
-
-                            var preId
-                            if (self.currentId < self.audios.length - 1) {
-                                self.currentId++
-                                    preId = self.currentId - 1
-                            } else {
-                                self.currentId = 0
-                                preId = self.audios.length - 1
-                            }
-
-                            self.audios[self.currentId].currentTime = 0
-
-                            self.int = setInterval(function() {
-                                self.audios[self.currentId].play()
-                                if (self.audios[preId].volume > 0) {
-                                    self.audios[preId].volume -= .01
-                                    self.audios[self.currentId].volume += .01
-                                } else {
-                                    self.audios[preId].pause()
-                                    window.clearInterval(self.int)
-                                    self.int = null
-                                }
-                            }, self.crossTime / 100)
-                        }
-                    }
-                })
-
-            </script>
-
-            <div id="container">
-                <button onclick="playNext()">play next</button>
-            </div>
+         
         </div>
 </body>
 
